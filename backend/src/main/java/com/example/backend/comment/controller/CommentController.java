@@ -12,12 +12,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/comment")
 public class CommentController {
 
     private final CommentService commentService;
+
+    @PutMapping
+    @PreAuthorize("isAuthenticated()")
+    public void update(CommentForm commentForm, Authentication authentication) {
+        commentService.update(commentForm, authentication);
+    }
+
+    @DeleteMapping("{commentId}")
+    @PreAuthorize("isAuthenticated()")
+    public void delete(@PathVariable Integer commentId, Authentication authentication) {
+        commentService.delete(commentId, authentication);
+
+    }
 
     @GetMapping("board/{boardId}")
     public List<CommentListDto> list(@PathVariable Integer boardId) {

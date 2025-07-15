@@ -3,10 +3,10 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AuthenticationContext } from "../../common/AuthenticationContextProvider.jsx";
+import { LuSend } from "react-icons/lu";
 
-export function CommentAdd({ boardId }) {
+export function CommentAdd({ boardId, isProcessing, setIsProcessing }) {
   const [comment, setComment] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
   const { user } = useContext(AuthenticationContext);
 
   function handleCommentSaveClick() {
@@ -37,7 +37,7 @@ export function CommentAdd({ boardId }) {
   }
 
   return (
-    <div>
+    <div className="position-relative">
       <FloatingLabel
         controlId="commentTextarea1"
         label={
@@ -59,13 +59,15 @@ export function CommentAdd({ boardId }) {
           onChange={(e) => setComment(e.target.value)}
         />
       </FloatingLabel>
-      <Button
-        disabled={isProcessing || saveButtonDisabled}
-        onClick={handleCommentSaveClick}
-      >
-        {isProcessing && <Spinner size="sm" />}
-        댓글 저장
-      </Button>
+      <div className="position-absolute bottom-0 end-0 m-3">
+        <Button
+          disabled={isProcessing || saveButtonDisabled}
+          onClick={handleCommentSaveClick}
+        >
+          {isProcessing && <Spinner size="sm" />}
+          <LuSend />
+        </Button>
+      </div>
     </div>
   );
 }

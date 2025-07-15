@@ -16,17 +16,21 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
     List<BoardListInfo> findAllByOrderByIdDesc();
 
     @Query(value = """
-            SELECT new com.example.backend.board.dto.BoardListDto(
-                        b.id,
-                        b.title,
-                        m.nickName,
-                        b.insertedAt)
-            FROM Board b JOIN Member m
-                        ON b.author.email = m.email
-            WHERE b.title LIKE %:keyword%
-               OR b.content LIKE %:keyword%
-               OR m.nickName LIKE %:keyword%
-            ORDER BY b.id DESC
+             SELECT new com.example.backend.board.dto.BoardListDto(
+                         b.id,
+                         b.title,
+                         m.nickName,
+                         b.insertedAt,
+                         COUNT(c))
+             FROM Board b JOIN Member m
+                         ON b.author.email = m.email
+                         LEFT JOIN Comment c
+                         ON b.id = c.board.id
+             WHERE b.title LIKE %:keyword%
+                OR b.content LIKE %:keyword%
+                OR m.nickName LIKE %:keyword%
+             GROUP BY b.id
+             ORDER BY b.id DESC
             """)
     Page<BoardListDto> findAllBy(String keyword, PageRequest pageRequest);
 
@@ -46,4 +50,6 @@ public interface BoardRepository extends JpaRepository<Board, Integer> {
     BoardDto findBoardById(Integer id);
 
     void deleteByAuthor(Member author);
+
+    List<Board> findByAuthor(Member db);
 }
