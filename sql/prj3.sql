@@ -40,7 +40,7 @@ FROM auth;
 
 # 검색 테스트용 데이터
 INSERT INTO board
-(title, content, author)
+    (title, content, author)
 VALUES ('qwe', 'asd', '99@99.com'),
        ('zxc', '123', '88@88.com'),
        ('456', 'rty', '99@99.com'),
@@ -68,8 +68,19 @@ CREATE TABLE comment
     FOREIGN KEY (board_id) REFERENCES board (id)
 );
 
+#좋아요 테이블
+CREATE TABLE board_like
+(
+    board_id     INT          NOT NULL,
+    member_email VARCHAR(255) NOT NULL,
+    PRIMARY KEY (board_id, member_email),
+    FOREIGN KEY (board_id) REFERENCES board (id),
+    FOREIGN KEY (member_email) REFERENCES member (email)
+);
+
 ALTER TABLE comment
     ADD CONSTRAINT FK_COMMENT_ON_AUTHOR FOREIGN KEY (author) REFERENCES member (email);
 
 ALTER TABLE comment
     ADD CONSTRAINT FK_COMMENT_ON_BOARD FOREIGN KEY (board_id) REFERENCES board (id);
+
